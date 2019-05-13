@@ -1,15 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using MobilePay.Models;
 
 namespace MobilePay.Calculations.Rules
 {
-    public class FixedMonthlyFee : IFeeCalculationRule
+    public class FixedMonthlyFeeRule : IFeeCalculationRule
     {
         private readonly decimal _monthlyFee;
         private readonly HashSet<MerchantMonthId> _invoicedMerchants = new HashSet<MerchantMonthId>();
 
-        public FixedMonthlyFee(decimal monthlyFee)
+        public FixedMonthlyFeeRule(decimal monthlyFee)
         {
             _monthlyFee = monthlyFee;
         }
@@ -19,7 +18,6 @@ namespace MobilePay.Calculations.Rules
             if (result.Fee <= 0) return;
 
             var merchantMonthId = new MerchantMonthId(inputData);
-
             if (MonthlyFeeWasApplied()) return;
 
             result.Fee += _monthlyFee;

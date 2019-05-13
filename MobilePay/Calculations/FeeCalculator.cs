@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using MobilePay.Calculations.Rules;
 using MobilePay.Models;
@@ -18,16 +17,12 @@ namespace MobilePay.Calculations
             }
         }
 
-        public static FeeCalculator DefaultConfiguration => new FeeCalculator(new DefaultFeePercentage());
+        public static FeeCalculator DefaultConfiguration => new FeeCalculator(new DefaultFeePercentageRule());
 
 
         public MerchantFee CalFee(TransactionData data)
         {
-            var fee = new MerchantFee()
-            {
-                Date = data.Date,
-                MerchantName = data.MerchantName
-            };
+            var fee = new MerchantFee(data);
 
             foreach (var feeCalculationRule in _rules)
             {
@@ -43,20 +38,20 @@ namespace MobilePay.Calculations
             return this;
         }
 
-        public void ProcessData(IDataReader input, TextWriter output)
+        public void ProcessData(ITransactionDataReader input, TextWriter output)
         {
-            foreach (var dataLine in input.ReadData())
+            foreach (var transactionText in input.ReadData())
             {
                 string result = null;
-                if (IsNotEmpty(dataLine.Trim()))
+                if (IsNotEmpty(transactionText))
                 {
-                    TransactionData.TryParse(dataLine, out var data);
+                    TransactionData.TryParse(transactionText, out var data);
                     result = CalFee(data).ToString();
                 }
                 output.WriteLine(result);
             }
 
-            bool IsNotEmpty(string line) => !string.IsNullOrEmpty(line.Trim());
+            bool IsNotEmpty(string line) => !string.IsNullOrEmpty(line);
         }
     }
 }

@@ -1,16 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 
 namespace MobilePay
 {
-    public interface IDataReader
-    {
-        IEnumerable<string> ReadData();
-    }
-
-    public class ConsoleTransactionFileReader : IDataReader
+    public class ConsoleTransactionFileReader : ITransactionDataReader
     {
         private readonly string _defaultFileName;
 

@@ -11,8 +11,8 @@ namespace MobilePay.Tests
         public void DefaultRule_AppliesOnePercentFee()
         {
             TransactionData.TryParse("1999-01-01 TestMerchant 150", out var data);
-            var rule = new DefaultFeePercentage();
-            var result = new MerchantFee();
+            var rule = new DefaultFeePercentageRule();
+            var result = new MerchantFee(data);
 
             rule.CalculateFee(data, ref result);
             Assert.Equal(1.5m, result.Fee);
@@ -25,20 +25,11 @@ namespace MobilePay.Tests
         public void BigMerchantDiscountRule_AppliesDiscount(decimal discount, decimal input, decimal expectedFee)
         {
             TransactionData.TryParse("1999-01-01 TestMerchant 150", out var data);
-            var result = new MerchantFee() { Fee = input };
+            var result = new MerchantFee(data) { Fee = input };
 
-            var discountRule = new BigMerchantDiscount(new MerchantDiscount("TestMerchant", discount));
+            var discountRule = new BigMerchantDiscountRule(new MerchantDiscount("TestMerchant", discount));
             discountRule.CalculateFee(data, ref result);
             Assert.Equal(expectedFee, result.Fee);
-
-
-        }
-
-        [Fact]
-        public void DiscountRule_OnlyAcceptsValidDiscountValues()
-        {
-            Assert.Throws<ArgumentOutOfRangeException>(() => new BigMerchantDiscount(new MerchantDiscount("", -10)));
-            Assert.Throws<ArgumentOutOfRangeException>(() => new BigMerchantDiscount(new MerchantDiscount("", 111)));
         }
 
         [Fact]
@@ -46,39 +37,35 @@ namespace MobilePay.Tests
         {
             Assert.Throws<ArgumentException>(() =>
             {
-                new BigMerchantDiscount(
+                var unused = new BigMerchantDiscountRule(
                     new MerchantDiscount("test", 10m),
                     new MerchantDiscount("test", 10m)
                 );
             });
-
         }
-
 
         [Fact]
         public void FixedMonthlyFee_IsOnlyAppliedOncePerMonth()
         {
             decimal fixedFee = 15m;
             TransactionData.TryParse("1999-01-01 TestMerchant 150", out var data);
-            var result = new MerchantFee() { Fee = 0.1m };
+            var result = new MerchantFee(data) { Fee = 0.1m };
 
-            var discountRule = new FixedMonthlyFee(fixedFee);
+            var discountRule = new FixedMonthlyFeeRule(fixedFee);
             discountRule.CalculateFee(data, ref result);
             Assert.Equal(fixedFee + 0.1m, result.Fee);
             
             //------------------Second transaction for the same Merchant same month
             TransactionData.TryParse("1999-01-02 TestMerchant 150", out data);
-            result = new MerchantFee() { Fee = 0.1m };
+            result = new MerchantFee(data) { Fee = 0.1m };
             discountRule.CalculateFee(data, ref result);
             Assert.Equal(0.1m, result.Fee);
 
             //------------------Third transaction for the same Merchant NEXT month
             TransactionData.TryParse("1999-02-02 TestMerchant 150", out data);
-            result = new MerchantFee() { Fee = 0.1m };
+            result = new MerchantFee(data) { Fee = 0.1m };
             discountRule.CalculateFee(data, ref result);
             Assert.Equal(fixedFee + 0.1m, result.Fee);
-
         }
-
     }
 }

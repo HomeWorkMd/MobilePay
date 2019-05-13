@@ -1,14 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using MobilePay.Models;
 
 namespace MobilePay.Calculations.Rules
 {
-    public class BigMerchantDiscount : IFeeCalculationRule
+    public class BigMerchantDiscountRule : IFeeCalculationRule
     {
         private readonly Dictionary<string, decimal> _merchantDiscounts = new Dictionary<string, decimal>();
 
-        public BigMerchantDiscount(params MerchantDiscount[] merchantDiscounts)
+        public BigMerchantDiscountRule(params MerchantDiscount[] merchantDiscounts)
         {
             foreach (var discount in merchantDiscounts)
             {

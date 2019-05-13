@@ -3,7 +3,7 @@ using MobilePay.Models;
 
 namespace MobilePay.Calculations.Rules
 {
-    public class DefaultFeePercentage : IFeeCalculationRule
+    public class DefaultFeePercentageRule : IFeeCalculationRule
     {
         public void CalculateFee(TransactionData inputData, ref MerchantFee result)
         {

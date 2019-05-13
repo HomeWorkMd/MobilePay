@@ -1,7 +1,8 @@
-using System;
+using System.IO;
 using MobilePay.Calculations;
 using MobilePay.Calculations.Rules;
 using MobilePay.Models;
+using Moq;
 using Xunit;
 
 namespace MobilePay.Tests
@@ -36,7 +37,7 @@ namespace MobilePay.Tests
             TransactionData.TryParse(input, out var data);
             var result = FeeCalculator.DefaultConfiguration
                             .Using(
-                                new BigMerchantDiscount(
+                                new BigMerchantDiscountRule(
                                     new MerchantDiscount("TELIA", 10)))
                         .CalFee(data);
             Assert.Equal(expected, result.Fee);
@@ -53,7 +54,7 @@ namespace MobilePay.Tests
             TransactionData.TryParse(input, out var data);
             var result = FeeCalculator.DefaultConfiguration
                 .Using(
-                    new BigMerchantDiscount(
+                    new BigMerchantDiscountRule(
                         new MerchantDiscount("CIRCLE_K", 20)))
                 .CalFee(data);
             Assert.Equal(expected, result.Fee);
@@ -64,7 +65,7 @@ namespace MobilePay.Tests
         public void FixedMonthlyFee_AreAppliedOncePerMonthPerMerchant()
         {
         var monthlyFeeCalculator = FeeCalculator.DefaultConfiguration
-                                        .Using(new FixedMonthlyFee(29m));
+                                        .Using(new FixedMonthlyFeeRule(29m));
 
 
             TransactionData.TryParse("2018-09-02 CIRCLE_K  120", out var data);
@@ -86,47 +87,18 @@ namespace MobilePay.Tests
 
         }
 
-
-        [Theory]
-        [InlineData(25, "25.00")]
-        [InlineData(1, "1.00")]
-        [InlineData(0.05001, "0.05")]
-        public void FeeIsFormatted_AccordingToSpec(decimal fee, string expected)
-        {
-            var result = new MerchantFee() { Fee = fee }.ToString();
-            Assert.EndsWith(expected, result);
-        }
-
-        [Theory]
-        [InlineData("1901.01.01", "1901-01-01")]
-        public void DateIsFormatted_AccordingToSpec(string date, string expected)
-        {
-            var result = new MerchantFee() { Date = DateTime.Parse(date) }.ToString();
-            Assert.StartsWith(expected, result);
-        }
-
         [Fact]
-        public void TwoMerchantMonthIdInstances_AreEqual()
+        public void EmptyInputLine_ProducesAnEmptyLineInOutput()
         {
-            TransactionData.TryParse("2018-09-02 CIRCLE_K  120", out var data);
-            TransactionData.TryParse("2018-09-15 Circle_K  120", out var data2);
-            var mm1 = new MerchantMonthId(data);
-            var mm2 = new MerchantMonthId(data2);
+            var inputMoq = new Mock<ITransactionDataReader>();
+            inputMoq.Setup(p => p.ReadData()).Returns(() => new[] { string.Empty});
+            var output = new Mock<TextWriter>();
+            output.Setup(p=>p.WriteLine(It.IsAny<string>()))
+                .Verifiable();
 
-            Assert.Equal(mm1, mm2);
-            Assert.True(mm1 == mm2);
-        }
-
-        [Fact]
-        public void TwoDifferentMerchantMonthIdInstances_AreNotEqual()
-        {
-            TransactionData.TryParse("2018-09-02 CIRCLE_K  120", out var data);
-            TransactionData.TryParse("2018-09-15 TELIA  120", out var data2);
-            var mm1 = new MerchantMonthId(data);
-            var mm2 = new MerchantMonthId(data2);
-
-            Assert.NotEqual(mm1, mm2);
-            Assert.True(mm1 != mm2);
+            var calc = FeeCalculator.DefaultConfiguration;
+            calc.ProcessData(inputMoq.Object, output.Object);
+            output.Verify(p=>p.WriteLine(It.Is<string>(s => string.IsNullOrEmpty(s))));
         }
     }
 }

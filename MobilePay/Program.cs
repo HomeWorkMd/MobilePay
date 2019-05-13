@@ -13,10 +13,10 @@ namespace MobilePay
             SetupApplication();
 
             var calculator = FeeCalculator.DefaultConfiguration
-                                .Using(new BigMerchantDiscount(
+                                .Using(new BigMerchantDiscountRule(
                                     new MerchantDiscount("TELIA", 10),
                                     new MerchantDiscount("CIRCLE_K", 20)))
-                                .Using(new FixedMonthlyFee(29));
+                                .Using(new FixedMonthlyFeeRule(29));
 
             calculator.ProcessData(new ConsoleTransactionFileReader(), Console.Out);
 
