@@ -10,7 +10,7 @@ namespace MobilePay.Calculations.Rules
 
         public MerchantMonthId(TransactionData data)
         {
-            MerchantName = data.MerchantName.Trim();
+            MerchantName = data.Merchant.Name;
             YearMonthNo = data.Date.ToString("yyyyMM");
         }
 

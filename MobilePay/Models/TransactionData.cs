@@ -8,9 +8,8 @@ namespace MobilePay.Models
         static readonly char[] DefaultDelimiters = { ' ', ',', '.', ':', '\t' };
 
         public DateTime Date { get; private set; }
-        public string MerchantName { get; private set; }
+        public Merchant Merchant { get; private set; }
         public decimal Amount { get; private set; }
-        public string MerchantId => MerchantName.Trim();
 
 
         public static bool TryParse(string input, out TransactionData data, char[] delimiters = null)
@@ -22,7 +21,7 @@ namespace MobilePay.Models
                 data = new TransactionData
                 {
                     Date = DateTime.Parse(input.Substring(0, 11)).Date,
-                    MerchantName = input.Substring(11, lastIdx-11),
+                    Merchant = Merchant.Parse(input.Substring(11, lastIdx-11)),
                     Amount = decimal.Parse(input.Substring(lastIdx))
                 };
 

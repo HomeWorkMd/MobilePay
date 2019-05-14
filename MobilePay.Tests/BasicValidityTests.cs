@@ -13,7 +13,8 @@ namespace MobilePay.Tests
         [InlineData(0.05001, "0.05")]
         public void FeeIsFormatted_AccordingToSpec(decimal fee, string expected)
         {
-            var result = new MerchantFee(new TransactionData()) { Fee = fee }.ToString();
+            TransactionData.TryParse("1999-01-01 test 1", out var data);
+            var result = new MerchantFee(data){Fee = fee}.ToString();
             Assert.EndsWith(expected, result);
         }
 
@@ -53,8 +54,8 @@ namespace MobilePay.Tests
         [Fact]
         public void MerchantIsMandatory_whenCreatingDiscount()
         {
-            Assert.Throws<ArgumentNullException>(() => new MerchantDiscount(null, 10));
-            Assert.Throws<ArgumentNullException>(() => new MerchantDiscount("", 10));
+            Assert.Throws<ArgumentException>(() => new MerchantDiscount(null as string, 10));
+            Assert.Throws<ArgumentException>(() => new MerchantDiscount("", 10));
         }
 
         [Fact]

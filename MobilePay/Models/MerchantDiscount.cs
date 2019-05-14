@@ -4,17 +4,20 @@ namespace MobilePay.Models
 {
     public class MerchantDiscount
     {
-        public MerchantDiscount(string merchantName, decimal discountPercent)
+        public MerchantDiscount(string merchantName, decimal discountPercent) :
+            this(Merchant.Parse(merchantName), discountPercent)
+        {
+        }
+
+        public MerchantDiscount(Merchant merchant, decimal discountPercent)
         {
             if (discountPercent < 0 || discountPercent > 100)
                 throw new ArgumentOutOfRangeException(nameof(discountPercent), "Must be between 0 and 100");
-            if (string.IsNullOrEmpty(merchantName))
-                throw new ArgumentNullException(nameof(merchantName));
-            
-            MerchantName = merchantName;
+
             DiscountPercent = discountPercent;
+            Merchant = merchant ?? throw new ArgumentNullException(nameof(merchant));
         }
-        public string MerchantName { get; }
+        public Merchant Merchant { get; }
         public decimal DiscountPercent { get; } 
     }
 }
