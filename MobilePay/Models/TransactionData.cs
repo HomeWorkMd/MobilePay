@@ -5,7 +5,8 @@ namespace MobilePay.Models
 {
     public class TransactionData
     {
-        static readonly char[] DefaultDelimiters = { ' ', ',', '.', ':', '\t' };
+        private const int DatePartLength = 10;
+        static readonly char[] DefaultDelimiters = { ' ', ':', '|', '\t' };
 
         public DateTime Date { get; private set; }
         public Merchant Merchant { get; private set; }
@@ -18,11 +19,12 @@ namespace MobilePay.Models
             try
             {
                 var lastIdx = input.Trim().LastIndexOfAny(delimiters ?? DefaultDelimiters);
+                input = input.TrimStart();
                 data = new TransactionData
                 {
-                    Date = DateTime.Parse(input.Substring(0, 11)).Date,
-                    Merchant = Merchant.Parse(input.Substring(11, lastIdx-11)),
-                    Amount = decimal.Parse(input.Substring(lastIdx))
+                    Date = DateTime.Parse(input.Substring(0, DatePartLength)).Date,
+                    Merchant = Merchant.Parse(input.Substring(DatePartLength, lastIdx - DatePartLength)),
+                    Amount = decimal.Parse(input.Substring(lastIdx + 1))
                 };
 
                 return true;

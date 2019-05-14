@@ -45,8 +45,8 @@ namespace MobilePay.Calculations
                 string result = null;
                 if (IsNotEmpty(transactionText))
                 {
-                    TransactionData.TryParse(transactionText, out var data);
-                    result = CalFee(data).ToString();
+                    if (TransactionData.TryParse(transactionText, out var data))
+                        result = CalFee(data).ToString();
                 }
                 output.WriteLine(result);
             }

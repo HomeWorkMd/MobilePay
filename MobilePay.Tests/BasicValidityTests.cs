@@ -14,7 +14,7 @@ namespace MobilePay.Tests
         public void FeeIsFormatted_AccordingToSpec(decimal fee, string expected)
         {
             TransactionData.TryParse("1999-01-01 test 1", out var data);
-            var result = new MerchantFee(data){Fee = fee}.ToString();
+            var result = new MerchantFee(data) { Fee = fee }.ToString();
             Assert.EndsWith(expected, result);
         }
 
@@ -25,6 +25,34 @@ namespace MobilePay.Tests
             TransactionData.TryParse(input, out var data);
             var result = new MerchantFee(data).ToString();
             Assert.StartsWith(expected, result);
+        }
+
+        [Fact]
+        public void FailureToParseTransactionData_shouldReturnFalse()
+        {
+            var rez = TransactionData.TryParse("This is wrong", out TransactionData _);
+            Assert.False(rez);
+        }
+
+        [Fact]
+        public void TransactionParser_IgnoresLeadingSpaces()
+        {
+            var rez = TransactionData.TryParse("   1999-01-01 xxx 1", out TransactionData data);
+            Assert.True(rez);
+            Assert.Equal(new DateTime(1999, 1, 1), data.Date);
+        }
+
+        [Fact]
+        public void TransactionParser_IgnoresSpacesAndTabsInBetween()
+        {
+            Assert.True(TransactionData.TryParse("1999-01-01   xxx    1", out TransactionData data));
+            Assert.True(TransactionData.TryParse("1999-01-01    xxx     1", out data));
+            Assert.True(TransactionData.TryParse("1999-01-01     xxx     1", out data));
+            Assert.True(TransactionData.TryParse("1999-01-01     xxx     1.15", out data));
+
+            Assert.Equal( "xxx", data.Merchant.Name);
+            Assert.Equal(1.15m, data.Amount);
+            Assert.Equal(new DateTime(1999, 1,1), data.Date);
         }
 
         [Fact]
@@ -50,7 +78,6 @@ namespace MobilePay.Tests
             Assert.NotEqual(mm1, mm2);
             Assert.True(mm1 != mm2);
         }
-
 
         [Fact]
         public void Merchant_MustHaveA_Name()
@@ -82,7 +109,7 @@ namespace MobilePay.Tests
             Assert.Equal(mm1, mm2);
             Assert.True(mm1 == mm2);
         }
-       
+
         [Fact]
         public void MerchantIsMandatory_whenCreatingDiscount()
         {
