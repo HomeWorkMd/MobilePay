@@ -6,7 +6,7 @@ namespace MobilePay.Models
     public class TransactionData
     {
         private const int DatePartLength = 10;
-        static readonly char[] DefaultDelimiters = { ' ', ':', '|', '\t' };
+        private static readonly char[] DefaultDelimiters = {' ', ':', '|', '\t'};
 
         public DateTime Date { get; private set; }
         public Merchant Merchant { get; private set; }
@@ -31,7 +31,7 @@ namespace MobilePay.Models
             }
             catch (Exception ex)
             {
-                Trace.TraceWarning($"Failed to parse input data, with error : {ex }");
+                Trace.TraceWarning($"Failed to parse input data, with error : {ex}");
                 return false;
             }
         }

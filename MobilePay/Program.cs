@@ -6,11 +6,12 @@ using MobilePay.Calculations.Rules;
 using MobilePay.Models;
 
 [assembly: InternalsVisibleTo("MobilePay.Tests")]
+
 namespace MobilePay
 {
     internal class Program
     {
-        static void Main()
+        private static void Main()
         {
             SetupApplication();
 
@@ -24,11 +25,13 @@ namespace MobilePay
 
         internal static FeeCalculator ConfigureNewCalculator()
         {
-            var calculator = FeeCalculator.DefaultConfiguration
-                .Use(new BigMerchantDiscountRule(
-                    new MerchantDiscount("TELIA", 10),
-                    new MerchantDiscount("CIRCLE_K", 20)))
-                .Use(new FixedMonthlyFeeRule(29));
+            var calculator = new FeeCalculator(
+                new DefaultFeePercentageRule(
+                    new BigMerchantDiscountRule(
+                        new FixedMonthlyFeeRule(29m),
+                        new MerchantDiscount("TELIA", 10m),
+                        new MerchantDiscount("CIRCLE_K", 20m))));
+
             return calculator;
         }
 
@@ -39,7 +42,7 @@ namespace MobilePay
             AppDomain.CurrentDomain.UnhandledException += UnhandledExceptionTrapper;
         }
 
-        static void UnhandledExceptionTrapper(object sender, UnhandledExceptionEventArgs e)
+        private static void UnhandledExceptionTrapper(object sender, UnhandledExceptionEventArgs e)
         {
             Trace.TraceError($"Failed to process data: \r\n{e.ExceptionObject}");
             Console.WriteLine("Press Enter to continue");

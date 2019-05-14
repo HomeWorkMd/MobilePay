@@ -4,6 +4,15 @@ namespace MobilePay.Models
 {
     public class Merchant
     {
+        private Merchant(string input)
+        {
+            OriginalName = input.TrimStart();
+            Name = input.Trim();
+        }
+
+        public string OriginalName { get; }
+        public string Name { get; }
+
         public static Merchant Parse(string input)
         {
             if (string.IsNullOrWhiteSpace(input?.Trim()))
@@ -11,14 +20,6 @@ namespace MobilePay.Models
 
             return new Merchant(input);
         }
-
-        private Merchant(string input)
-        {
-            OriginalName = input.TrimStart();
-            Name = input.Trim();
-        }
-        public string OriginalName { get; }
-        public string Name { get; }
 
         #region Equals infrastructure
 

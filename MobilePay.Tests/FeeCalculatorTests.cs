@@ -22,7 +22,7 @@ namespace MobilePay.Tests
         public void DefaultFeeIs_1_Percent(string input, decimal expected)
         {
             TransactionData.TryParse(input, out var data);
-            var result = FeeCalculator.DefaultConfiguration.CalFee(data);
+            var result = new FeeCalculator(new DefaultFeePercentageRule()).CalFee(data);
             Assert.Equal(expected, result.Fee);
         }
 
@@ -35,11 +35,10 @@ namespace MobilePay.Tests
         public void BigMerchantDiscount_IsApplied(string input, decimal expected)
         {
             TransactionData.TryParse(input, out var data);
-            var result = FeeCalculator.DefaultConfiguration
-                            .Use(
-                                new BigMerchantDiscountRule(
-                                    new MerchantDiscount("TELIA", 10)))
-                        .CalFee(data);
+            var result = new FeeCalculator(new DefaultFeePercentageRule(
+                    new BigMerchantDiscountRule(null,
+                        new MerchantDiscount("TELIA", 10))))
+                .CalFee(data);
             Assert.Equal(expected, result.Fee);
         }
 
@@ -52,20 +51,33 @@ namespace MobilePay.Tests
         public void AnotherBigMerchantDiscount_IsApplied(string input, decimal expected)
         {
             TransactionData.TryParse(input, out var data);
-            var result = FeeCalculator.DefaultConfiguration
-                .Use(
-                    new BigMerchantDiscountRule(
-                        new MerchantDiscount("CIRCLE_K", 20)))
+            var result = new FeeCalculator(new DefaultFeePercentageRule(
+                    new BigMerchantDiscountRule(null,
+                        new MerchantDiscount("CIRCLE_K", 20))))
                 .CalFee(data);
             Assert.Equal(expected, result.Fee);
         }
 
-        
+        [Fact]
+        public void EmptyInputLine_ProducesAnEmptyLineInOutput()
+        {
+            var inputMoq = new Mock<ITransactionDataReader>();
+            inputMoq.Setup(p => p.ReadData()).Returns(() => new[] {string.Empty});
+            var output = new Mock<TextWriter>();
+            output.Setup(p => p.WriteLine(It.IsAny<string>()))
+                .Verifiable();
+
+            var calc = new FeeCalculator(new DefaultFeePercentageRule());
+            calc.ProcessData(inputMoq.Object, output.Object);
+            output.Verify(p => p.WriteLine(It.Is<string>(s => string.IsNullOrEmpty(s))));
+        }
+
         [Fact(DisplayName = "MOBILEPAY - 5")]
         public void FixedMonthlyFee_AreAppliedOncePerMonthPerMerchant()
         {
-        var monthlyFeeCalculator = FeeCalculator.DefaultConfiguration
-                                        .Use(new FixedMonthlyFeeRule(29m));
+            var monthlyFeeCalculator = new FeeCalculator(
+                new DefaultFeePercentageRule(
+                    new FixedMonthlyFeeRule(29m)));
 
 
             TransactionData.TryParse("2018-09-02 CIRCLE_K  120", out var data);
@@ -84,26 +96,6 @@ namespace MobilePay.Tests
             TransactionData.TryParse("2018-10-29 CIRCLE_K  150", out data);
             //Second transaction during the same month does NOT have 29 added
             Assert.Equal(1.50m, monthlyFeeCalculator.CalFee(data).Fee);
-
-        }
-
-        [Fact]
-        public void EmptyInputLine_ProducesAnEmptyLineInOutput()
-        {
-            var inputMoq = new Mock<ITransactionDataReader>();
-            inputMoq.Setup(p => p.ReadData()).Returns(() => new[] { string.Empty});
-            var output = new Mock<TextWriter>();
-            output.Setup(p=>p.WriteLine(It.IsAny<string>()))
-                .Verifiable();
-
-            var calc = FeeCalculator.DefaultConfiguration;
-            calc.ProcessData(inputMoq.Object, output.Object);
-            output.Verify(p=>p.WriteLine(It.Is<string>(s => string.IsNullOrEmpty(s))));
         }
     }
 }
-
-
-
-
-

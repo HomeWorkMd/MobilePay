@@ -12,6 +12,7 @@ namespace MobilePay
         {
             _defaultFileName = defaultFileName;
         }
+
         public IEnumerable<string> ReadData()
         {
             Console.WriteLine($"Enter filename or press Enter to use default: ({_defaultFileName})");

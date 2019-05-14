@@ -19,6 +19,6 @@ namespace MobilePay.Models
         }
 
         public Merchant Merchant { get; }
-        public decimal DiscountPercent { get; } 
+        public decimal DiscountPercent { get; }
     }
 }
