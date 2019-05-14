@@ -10,16 +10,14 @@ namespace MobilePay
 {
     internal class Program
     {
-        static void Main()
+        static void Main(string[] args)
         {
             SetupApplication();
 
             var calculator = ConfigureNewCalculator();
 
-            calculator.ProcessData(new ConsoleTransactionFileReader(), Console.Out);
+            calculator.ProcessData(new ConsoleTransactionFileReader(args.Length > 0 ? args[0] : null), Console.Out);
 
-            Console.WriteLine("\r\n---------------------------------------------\r\nPress any key to exit.");
-            Console.ReadKey();
         }
 
         internal static FeeCalculator ConfigureNewCalculator()
@@ -37,6 +35,14 @@ namespace MobilePay
             Trace.AutoFlush = true;
             Trace.Listeners.Add(new TextWriterTraceListener(Console.Out));
             AppDomain.CurrentDomain.UnhandledException += UnhandledExceptionTrapper;
+            AppDomain.CurrentDomain.ProcessExit += (sender, args) =>
+            {
+                if (Debugger.IsAttached)
+                {
+                    Console.WriteLine("\r\n---------------------------------------------\r\nPress any key to exit.");
+                    Console.ReadKey();
+                }
+            };
         }
 
         static void UnhandledExceptionTrapper(object sender, UnhandledExceptionEventArgs e)

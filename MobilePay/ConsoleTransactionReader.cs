@@ -6,22 +6,25 @@ namespace MobilePay
 {
     public class ConsoleTransactionFileReader : ITransactionDataReader
     {
-        private readonly string _defaultFileName;
+        private readonly string _fileName;
+        private const string DefaultFileName = "Transactions.txt";
 
-        public ConsoleTransactionFileReader(string defaultFileName = "transactions.txt")
+        public ConsoleTransactionFileReader(string customFileName = null)
         {
-            _defaultFileName = defaultFileName;
+            if (string.IsNullOrEmpty(customFileName))
+            {
+                Console.WriteLine($"Enter filename or press Enter to use default: ({DefaultFileName})");
+                var input = Console.ReadLine();
+                _fileName = string.IsNullOrEmpty(input) ? DefaultFileName : input.Trim();
+            }
+            else
+                _fileName = customFileName;
         }
         public IEnumerable<string> ReadData()
         {
-            Console.WriteLine($"Enter filename or press Enter to use default: ({_defaultFileName})");
-            var input = Console.ReadLine();
-
-            var filename = string.IsNullOrEmpty(input) ? _defaultFileName : input.Trim();
-
             try
             {
-                return File.ReadLines(filename);
+                return File.ReadLines(_fileName);
             }
             catch (Exception e)
             {

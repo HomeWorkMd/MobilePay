@@ -3,9 +3,14 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28307.572
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MobilePay", "MobilePay\MobilePay.csproj", "{A54F44A9-8254-4E3A-A211-941A959CF42B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MobilePay", "MobilePay\MobilePay.csproj", "{A54F44A9-8254-4E3A-A211-941A959CF42B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MobilePay.Tests", "MobilePay.Tests\MobilePay.Tests.csproj", "{4255304B-A5EC-4066-A942-4CE55C4E4216}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MobilePay.Tests", "MobilePay.Tests\MobilePay.Tests.csproj", "{4255304B-A5EC-4066-A942-4CE55C4E4216}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{274EDFE2-A057-4EB8-ACC8-35C79A323786}"
+	ProjectSection(SolutionItems) = preProject
+		ReadMe.md = ReadMe.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
