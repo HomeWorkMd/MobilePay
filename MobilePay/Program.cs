@@ -23,10 +23,10 @@ namespace MobilePay
         internal static FeeCalculator ConfigureNewCalculator()
         {
             var calculator = FeeCalculator.DefaultConfiguration
-                .Use(new BigMerchantDiscountRule(
-                    new MerchantDiscount("TELIA", 10),
-                    new MerchantDiscount("CIRCLE_K", 20)))
-                .Use(new FixedMonthlyFeeRule(29));
+                                .Add(new BigMerchantDiscountRule(
+                                    new MerchantDiscount("TELIA", 10),
+                                    new MerchantDiscount("CIRCLE_K", 20)))
+                                .Add(new FixedMonthlyFeeRule(29));
             return calculator;
         }
 

@@ -36,7 +36,7 @@ namespace MobilePay.Tests
         {
             TransactionData.TryParse(input, out var data);
             var result = FeeCalculator.DefaultConfiguration
-                            .Use(
+                            .Add(
                                 new BigMerchantDiscountRule(
                                     new MerchantDiscount("TELIA", 10)))
                         .CalFee(data);
@@ -53,7 +53,7 @@ namespace MobilePay.Tests
         {
             TransactionData.TryParse(input, out var data);
             var result = FeeCalculator.DefaultConfiguration
-                .Use(
+                .Add(
                     new BigMerchantDiscountRule(
                         new MerchantDiscount("CIRCLE_K", 20)))
                 .CalFee(data);
@@ -65,7 +65,7 @@ namespace MobilePay.Tests
         public void FixedMonthlyFee_AreAppliedOncePerMonthPerMerchant()
         {
         var monthlyFeeCalculator = FeeCalculator.DefaultConfiguration
-                                        .Use(new FixedMonthlyFeeRule(29m));
+                                        .Add(new FixedMonthlyFeeRule(29m));
 
 
             TransactionData.TryParse("2018-09-02 CIRCLE_K  120", out var data);

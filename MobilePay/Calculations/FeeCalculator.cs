@@ -32,7 +32,7 @@ namespace MobilePay.Calculations
             return fee;
         }
 
-        public FeeCalculator Use(IFeeCalculationRule rule)
+        public FeeCalculator Add(IFeeCalculationRule rule)
         {
             _rules.Add(rule);
             return this;
