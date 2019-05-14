@@ -1,7 +1,6 @@
 ﻿using System;
-using MobilePay.Models;
 
-namespace MobilePay.Calculations.Rules
+namespace MobilePay.Models
 {
     public class MerchantMonthId
     {

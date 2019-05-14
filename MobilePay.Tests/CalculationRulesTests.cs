@@ -5,7 +5,7 @@ using Xunit;
 
 namespace MobilePay.Tests
 {
-    public class RulesTests
+    public class CalculationRulesTests
     {
         [Fact]
         public void DefaultRule_AppliesOnePercentFee()

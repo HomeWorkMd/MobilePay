@@ -6,8 +6,7 @@ namespace MobilePay.Models
     {
         public MerchantDiscount(string merchantName, decimal discountPercent) :
             this(Merchant.Parse(merchantName), discountPercent)
-        {
-        }
+        { }
 
         public MerchantDiscount(Merchant merchant, decimal discountPercent)
         {
@@ -19,6 +18,6 @@ namespace MobilePay.Models
         }
 
         public Merchant Merchant { get; }
-        public decimal DiscountPercent { get; } 
+        public decimal DiscountPercent { get; }
     }
 }

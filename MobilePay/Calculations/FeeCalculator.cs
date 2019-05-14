@@ -11,10 +11,7 @@ namespace MobilePay.Calculations
 
         private FeeCalculator(params IFeeCalculationRule[] rules)
         {
-            foreach (var rule in rules)
-            {
-                _rules.Add(rule);
-            }
+            _rules.AddRange(rules);
         }
 
         public static FeeCalculator DefaultConfiguration => new FeeCalculator(new DefaultFeePercentageRule());
