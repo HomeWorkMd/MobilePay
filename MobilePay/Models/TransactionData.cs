@@ -22,7 +22,7 @@ namespace MobilePay.Models
                 data = new TransactionData
                 {
                     Date = DateTime.Parse(input.Substring(0, 11)).Date,
-                    MerchantName = input.Substring(10, lastIdx-10),
+                    MerchantName = input.Substring(11, lastIdx-11),
                     Amount = decimal.Parse(input.Substring(lastIdx))
                 };
 
