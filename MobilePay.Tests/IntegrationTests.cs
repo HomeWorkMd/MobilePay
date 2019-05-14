@@ -14,16 +14,17 @@ namespace MobilePay.Tests
         [Fact]
         public void CalculatorOutput_matchesExpectedOutputCases()
         {
-            var calculator = Program.ConfigureCalculator();
+            var calculator = Program.ConfigureNewCalculator();
             var output = new StringWriter();
             var sampleReader = new StringTransactionDataReader(Resources.SampleInput);
             calculator.ProcessData(sampleReader, output);
 
+
             var expectedLines = StringToTrimmedLines(Resources.ExpectedOutput);
             var expected = string.Join(Environment.NewLine, expectedLines);
-
             Assert.Equal(expected, output.ToString());
         }
+
 
         public static IEnumerable<string> StringToTrimmedLines(string input)
         {

@@ -20,6 +20,8 @@ namespace MobilePay.Models
         public string OriginalName { get; }
         public string Name { get; }
 
+        #region Equals infrastructure
+
         public override bool Equals(object obj)
         {
             return obj as Merchant != null && Equals((Merchant) obj);
@@ -27,7 +29,7 @@ namespace MobilePay.Models
 
         protected bool Equals(Merchant other)
         {
-            return string.Equals(Name, other.Name);
+            return string.Equals(Name, other.Name, StringComparison.InvariantCultureIgnoreCase);
         }
 
         public override int GetHashCode()
@@ -44,5 +46,7 @@ namespace MobilePay.Models
         {
             return !Equals(left, right);
         }
+
+        #endregion
     }
 }

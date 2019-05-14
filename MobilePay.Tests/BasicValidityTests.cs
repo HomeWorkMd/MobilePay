@@ -51,6 +51,38 @@ namespace MobilePay.Tests
             Assert.True(mm1 != mm2);
         }
 
+
+        [Fact]
+        public void Merchant_MustHaveA_Name()
+        {
+            Assert.Throws<ArgumentException>(() => { Merchant.Parse(""); });
+            Assert.Throws<ArgumentException>(() => { Merchant.Parse("    "); });
+            Assert.Throws<ArgumentException>(() => { Merchant.Parse("   "); });
+            Assert.Throws<ArgumentException>(() => { Merchant.Parse(null); });
+        }
+
+        [Fact]
+        public void SpacingCharacters_AreIgnored_whenComparingMerchants()
+        {
+            var mm1 = Merchant.Parse("Test");
+            var mm2 = Merchant.Parse("Test   ");
+            var mm3 = Merchant.Parse("Test      ");
+
+            Assert.Equal(mm1, mm2);
+            Assert.Equal(mm1, mm3);
+            Assert.Equal(mm2, mm3);
+        }
+
+        [Fact]
+        public void CasingIsIgnored_whenComparingMerchants()
+        {
+            var mm1 = Merchant.Parse("Test");
+            var mm2 = Merchant.Parse("test");
+
+            Assert.Equal(mm1, mm2);
+            Assert.True(mm1 == mm2);
+        }
+       
         [Fact]
         public void MerchantIsMandatory_whenCreatingDiscount()
         {

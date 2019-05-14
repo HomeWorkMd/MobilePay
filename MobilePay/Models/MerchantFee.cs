@@ -4,17 +4,17 @@ namespace MobilePay.Models
 {
     public class MerchantFee
     {
-        public MerchantFee(TransactionData data)
+        public MerchantFee(TransactionData transaction)
         {
-            if (data == null) throw new ArgumentNullException(nameof(data));
+            if (transaction == null) throw new ArgumentNullException(nameof(transaction));
 
-            Date = data.Date;
-            Merchant = data.Merchant;
+            Date = transaction.Date;
+            Merchant = transaction.Merchant;
         }
 
         public DateTime Date { get; }
         public Merchant Merchant { get; }
-        public decimal Fee { get; set; }
+        internal decimal Fee { get; set; }
 
         public override string ToString()
         {

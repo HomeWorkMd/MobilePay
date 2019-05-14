@@ -14,7 +14,7 @@ namespace MobilePay
         {
             SetupApplication();
 
-            var calculator = ConfigureCalculator();
+            var calculator = ConfigureNewCalculator();
 
             calculator.ProcessData(new ConsoleTransactionFileReader(), Console.Out);
 
@@ -22,7 +22,7 @@ namespace MobilePay
             Console.ReadKey();
         }
 
-        internal static FeeCalculator ConfigureCalculator()
+        internal static FeeCalculator ConfigureNewCalculator()
         {
             var calculator = FeeCalculator.DefaultConfiguration
                 .Use(new BigMerchantDiscountRule(

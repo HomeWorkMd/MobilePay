@@ -17,6 +17,7 @@ namespace MobilePay.Models
             DiscountPercent = discountPercent;
             Merchant = merchant ?? throw new ArgumentNullException(nameof(merchant));
         }
+
         public Merchant Merchant { get; }
         public decimal DiscountPercent { get; } 
     }
