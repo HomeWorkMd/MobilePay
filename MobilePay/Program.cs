@@ -16,7 +16,8 @@ namespace MobilePay
 
             var calculator = ConfigureNewCalculator();
 
-            calculator.ProcessData(new ConsoleTransactionFileReader(args.Length > 0 ? args[0] : null), Console.Out);
+            var customFileName = args.Length > 0 ? args[0] : null;
+            calculator.ProcessData(new ConsoleTransactionFileReader(customFileName), Console.Out);
 
         }
 

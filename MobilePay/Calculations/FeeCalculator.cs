@@ -7,7 +7,7 @@ namespace MobilePay.Calculations
 {
     public class FeeCalculator
     {
-        private readonly IList<IFeeCalculationRule> _rules = new List<IFeeCalculationRule>();
+        private readonly List<IFeeCalculationRule> _rules = new List<IFeeCalculationRule>();
 
         private FeeCalculator(params IFeeCalculationRule[] rules)
         {
@@ -23,11 +23,7 @@ namespace MobilePay.Calculations
         public MerchantFee CalFee(TransactionData data)
         {
             var fee = new MerchantFee(data);
-
-            foreach (var feeCalculationRule in _rules)
-            {
-                feeCalculationRule.CalculateFee(data, ref fee);
-            }
+            _rules.ForEach(r => r.CalculateFee(data, ref fee));
 
             return fee;
         }
